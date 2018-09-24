@@ -1,5 +1,6 @@
 # Anonymous
-The project is a simple dodging game which the player controls the rocket to aviod the obstacles that falls of at random. Each obstacle the player has dodged will give the player certain points. You can play this on Android platform or in Unity.
+The project is a simple dodging game which the player controls the rocket to aviod the obstacles that falls of at random. 
+Each obstacle the player has dodged will give the player certain points. You can play this on Android platform or in Unity.
 
 To get started withe project, just download the Unity from https://unity3d.com/.
 
