@@ -5,31 +5,44 @@ using UnityEngine;
 public class BackGround2 : MonoBehaviour {
 
     private Material material;
-    private float runSpeed = 0.3F;
-    private float bgSpeed = 3.0F;
+    private float runSpeed = 0.2F;
+    private float bgSpeed = 3.4F;
+    public GameObject backGround;
+    Vector3 backGroundPosition;
+    Vector3 backGroundSize;
+    private int seconds = 0;
+    private bool drop = false;
 
 	// Use this for initialization
-	void Start () {
-
+    void Start () {
+        StartCoroutine("secondsIncrease");
         material = transform.GetComponent<Renderer>().material;
+        backGroundPosition = backGround.transform.position;
+        backGroundSize = backGround.transform.localScale;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        this.imageControl();
-	}
+        if (seconds % 30 == 0)
+            drop = true;
+        if (seconds % 60 == 0)
+        {
+            backGround.transform.position = new Vector3(backGroundPosition.x, backGroundPosition.y, backGroundPosition.z);
+            drop = false;
+        }
+        this.imageControl();     
+    }
 
     //change background image
     void imageControl()
     {
-
-        if (Time.time > 3)
+        if (drop)
         {
-            transform.Translate(Vector3.back * Time.deltaTime * bgSpeed);
+            transform.Translate(Vector3.down * Time.deltaTime * bgSpeed);
 
-            if (transform.position.z <= 2.7F)
+            if (transform.position.z <= backGroundPosition.z-backGroundSize.y)
             {
-                transform.position = new Vector3(transform.position.x, transform.position.y, 2.7F);
+                transform.position = new Vector3(backGroundPosition.x, backGroundPosition.y, backGroundPosition.z-backGroundSize.y);
                 this.imageReset();
             }
         }
@@ -37,10 +50,17 @@ public class BackGround2 : MonoBehaviour {
     //Background image offset
     void imageReset()
     {
-        if (transform.position == new Vector3(0F, -1F, 2.7F))
+        float offset = Time.time * runSpeed;
+        material.mainTextureOffset = new Vector3(0, offset);
+    }
+
+    //Create a simple second counter use to change the back groupnd
+    IEnumerator secondsIncrease()
+    {
+        while (true)
         {
-            float offset = -Time.time * runSpeed;
-            material.mainTextureOffset = new Vector3(0, offset);
+            yield return new WaitForSeconds(1);
+            seconds++;
         }
     }
 }

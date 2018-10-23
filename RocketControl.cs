@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class RocketControl : MonoBehaviour {
     public GameObject rocket;               // Refer to the object that we are going to drag
-
-    public float xMin, xMax, zMin, zMax;    // Set up xm z Minimum and Maximun
+    public float xMin, xMax, zMin, zMax;    // Set up x & z Minimum and Maximum
     public Vector3 rocketCenter;            // The rocket object center point
     public Vector3 touchPoint;              // The touch point
     public Vector3 offset;                  // Vector between touch point to the rocket center
@@ -13,6 +12,7 @@ public class RocketControl : MonoBehaviour {
     RaycastHit hit;                         // Store hit object information
     public bool touching = false;           // Will be used to detect user touching the screen or not      
 
+    // The method allow the developer to set up the boundary through the Unity
     public void BoundaryConstructor(float aMin, float aMax, float bMin, float bMax)
     {
         xMin = aMin;
@@ -21,6 +21,34 @@ public class RocketControl : MonoBehaviour {
         zMax = bMax;
     }
 
+    // Change the rocket skin
+    public void changeToSkin()
+    {
+        GameObject rocket = GameObject.Find("Rocket");
+        Material material = rocket.GetComponent<MeshRenderer>().material;
+
+        var spaceship1 = Resources.Load<Texture2D>("spaceship png");
+        var spaceship2 = Resources.Load<Texture2D>("spaceship png_2");
+        var spaceship3 = Resources.Load<Texture2D>("spaceship png_3");
+
+        switch (rocketImg.spaceShipNum)
+        {
+            case 1:
+                material.mainTexture = spaceship1 as Texture;
+                break;
+            case 2:
+                material.mainTexture = spaceship2 as Texture;
+                break;
+            case 3:
+                material.mainTexture = spaceship3 as Texture;
+                break;
+        }
+    }
+
+    private void Start()
+    {
+        changeToSkin();
+    }
     // Update is called once per frame
     void FixedUpdate () {
 
@@ -40,7 +68,7 @@ public class RocketControl : MonoBehaviour {
             {
                 rocket = hit.collider.gameObject;
 
-                // To check the object name equal to "Rocket" or not
+                // If object name equle to Rocket then set up rocketCenter, touchPoint, offset and touching
                 if (VerifyObjectName(rocket))
                 {
                     rocketCenter = rocket.transform.position;
@@ -73,11 +101,11 @@ public class RocketControl : MonoBehaviour {
         }
 #endif
 
-        // Moving the rocket by touch the phone screen to moving it
+        // Using Unity Touch Phases to Control the rocket movement
         if (Input.touchCount > 0)
         {
             // GetTouch(0) is mean the first finger that touch the screen
-            // When player pressed down on the phone screen
+            // When player's finger pressed down on the phone screen
             if(Input.GetTouch(0).phase == TouchPhase.Began)
             {
                 // Convert touch position to a ray
@@ -87,7 +115,7 @@ public class RocketControl : MonoBehaviour {
                 {
                     rocket = hit.collider.gameObject;
 
-                    // To check the object name equal to "Rocket" or not
+                    // If object name equle to Rocket then set up rocketCenter, touchPoint, offset and touching
                     if (VerifyObjectName(rocket))
                     {
                         rocketCenter = rocket.transform.position;
@@ -110,7 +138,7 @@ public class RocketControl : MonoBehaviour {
                         SafeZoneRestrict(newRocketCenter.z, zMin, zMax));
                 }
             }
-            // When player released the finger and moving on the screen
+            // When player released the finger
             else if (Input.GetTouch(0).phase == TouchPhase.Ended && rocket)
             {
                 touching = false;
@@ -133,8 +161,8 @@ public class RocketControl : MonoBehaviour {
     {
         if (userInput >= min && userInput <= max)
             return userInput;
-        else
-            return Mathf.Clamp(userInput, min, max);
+        else                                            // If userIput less than min will return min
+            return Mathf.Clamp(userInput, min, max);    // Or userIput greater than max will return max
     }
 
     //Base on touch point and offset to set up a new rocket center position
@@ -142,7 +170,6 @@ public class RocketControl : MonoBehaviour {
     {
         Vector3 newRocketCenterPosition;
         newRocketCenterPosition = touchPoint - offset;
-        
         return newRocketCenterPosition;
     }
 }

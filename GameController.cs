@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameController : MonoBehaviour {
 
@@ -14,6 +15,7 @@ public class GameController : MonoBehaviour {
     {
         // Call SpawnWaves at the start
         StartCoroutine (SpawnWaves());
+        FindObjectOfType<AudioControl>().Play("BG");
     }
 
 
@@ -28,11 +30,33 @@ public class GameController : MonoBehaviour {
             {
                 
                 obstaclePosition = randomSpawPosition(spawnPosition);
-                // Set no ratation for the obstacle
-                Quaternion spawnRotation = Quaternion.identity;     
-                Instantiate(obstacle, obstaclePosition, spawnRotation);
+                // Set no ratation for the obstacle 
+                Instantiate(obstacle, obstaclePosition, Quaternion.Euler(new Vector3(90, 0, 0)));
                 // Wating [spawnWait] second then generate next obstacle
-                yield return new WaitForSeconds(spawnWait);
+                if (ScoreDisplay.scoreNumber <= 100)         // when socre <=100
+                {
+                    yield return new WaitForSeconds(spawnWait);    //spawnWait initializes to 0.8 in speed for each spawn
+
+                }
+                else if (ScoreDisplay.scoreNumber > 100 && ScoreDisplay.scoreNumber <= 500)  //score between 110 and 500
+                {
+                    yield return new WaitForSeconds((float)(spawnWait - 0.2));     // spawnwait = 0.8 - 0.2 = 0.6
+
+                }
+                else if (ScoreDisplay.scoreNumber > 500 && ScoreDisplay.scoreNumber <= 1000)   //score between 510 and 1000
+                {
+                    yield return new WaitForSeconds((float)(spawnWait - 0.3));  // spawnwait = 0.8 - 0.3 = 0.5
+                }
+
+                else if (ScoreDisplay.scoreNumber > 1000 && ScoreDisplay.scoreNumber <= 1500)   //score between 1100 and 1500
+                {
+                    yield return new WaitForSeconds((float)(spawnWait - 0.4));  // spawnwait = 0.8 - 0.4 = 0.4
+                }
+
+                else               // when scores > 1500
+                {
+                    yield return new WaitForSeconds((float)(spawnWait - 0.5));  // spawnwait = 0.8 - 0.5 = 0.3
+                }
             }
         }
     }

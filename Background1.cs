@@ -5,10 +5,14 @@ using UnityEngine;
 public class Background1 : MonoBehaviour {
     
     private Material material;
-    private float runSpeed = 0.3F;
+    private float runSpeed = 0.2F;
+    public GameObject backGround;
+    Vector3 backGroundPosition;
+
 	// Use this for initialization
 	void Start () {
         material = transform.GetComponent<Renderer>().material;
+        backGroundPosition = backGround.transform.position;
 	}
 	
 	// Update is called once per frame
@@ -19,9 +23,11 @@ public class Background1 : MonoBehaviour {
     //Background image offset
     void imageReset()
     {
-        if (transform.position == new Vector3(0F, -1F, 2.7F))
+        if (transform.position == new Vector3(backGroundPosition.x, backGroundPosition.y, backGroundPosition.z))
         {
-            float offset = -Time.time * runSpeed;
+            float offset = Time.time * runSpeed;
+
+            // Return to the initial background position
             material.mainTextureOffset = new Vector3(0, offset);
         }
     }
